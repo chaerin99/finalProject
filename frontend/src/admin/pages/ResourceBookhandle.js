@@ -25,6 +25,7 @@ import {
   ButtonContainer,
   ResourceSearchButton,
   WrapperContainer,
+  StyledButton,
 } from '../styles/ResourceBookhandle';
 
 import {
@@ -55,18 +56,6 @@ const ResourceBookhandle = () => {
   const userName = location.state.userName;
   const category = location.state.category;
   const cateNo = location.state.cateNo;
-
-  console.log(location);
-  console.log(cateNo);
-  // console.log(
-  //   reservNo,
-  //   startTime,
-  //   endTime,
-  //   reservName,
-  //   resourceName,
-  //   userNo,
-  //   content,
-  // );
 
   const [book, setBook] = useState([]);
 
@@ -123,7 +112,6 @@ const ResourceBookhandle = () => {
 
   const changeDescription = (e) => {
     setDescription(e.target.value);
-    console.log(description);
   };
 
   const changeResourceName = (e) => {
@@ -140,7 +128,6 @@ const ResourceBookhandle = () => {
           },
         },
       );
-      console.log(res);
       setCount(res.data.data.peopleList.length);
       setPeopleInit(res.data.data.peopleList);
       setBook(res.data.data.reservationView[0]);
@@ -150,23 +137,12 @@ const ResourceBookhandle = () => {
     }
   };
 
-  console.log(
-    reservNo,
-    resourceNo,
-    userNo,
-    cateNo,
-    reservName,
-    startTime,
-    endTime,
-    content,
-    resourceName,
-  );
-
   const postData = async () => {
     try {
       var temp = [];
       if (!people) {
         temp = peopleInit.map((item) => item.userNo);
+        setPeopleNo(temp);
       }
 
       const res = await axios.post(
@@ -189,7 +165,6 @@ const ResourceBookhandle = () => {
           },
         },
       );
-      console.log(res);
       alert('수정이 완료되었습니다');
       navigate('/admin/resourcebook', {
         state: { resourceName: resourceName, resourceNo: resourceNo },
@@ -219,7 +194,6 @@ const ResourceBookhandle = () => {
   };
 
   const onPeopleSearch = (e) => {
-    console.log('modal3');
     e.preventDefault();
     setOpenModal(true);
   };
@@ -443,9 +417,7 @@ const ResourceBookhandle = () => {
                   />
                 </ContentSort>
                 <ButtonContainer>
-                  <Button variant="primary" type="submit">
-                    수정
-                  </Button>
+                  <StyledButton type="submit">수정</StyledButton>
                 </ButtonContainer>
               </form>
             </ContentContainer>
