@@ -17,6 +17,7 @@ import {
   Container,
   LoginContainer,
   LoginTitle,
+  RightContainer,
   ImageContainer1,
   ImageContainer2,
   TitleContainer,
@@ -70,7 +71,6 @@ const Login = () => {
 
       if (res.data.resCode === 0) {
         setCookie('accessToken', res.headers.authorization);
-        //console.log(res);
       } else {
         alert(`잘못된 정보를 입력하셨습니다.`);
         return;
@@ -84,7 +84,6 @@ const Login = () => {
           },
         },
       );
-      console.log(userData);
       setUser({
         userId: userData.data.data[0].userId,
         birth: userData.data.data[0].birth,
@@ -110,7 +109,7 @@ const Login = () => {
           <img src={login} alt="Login" className="login" />
         </ImageContainer1>
 
-        <div>
+        <RightContainer>
           <TitleContainer>
             <span className="title">관리자</span>
           </TitleContainer>
@@ -152,7 +151,7 @@ const Login = () => {
               </ButtonContainer>
             </ContentContainer>
           </form>
-        </div>
+        </RightContainer>
       </LoginContainer>
     </Container>
   );

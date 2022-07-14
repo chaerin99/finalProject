@@ -24,6 +24,7 @@ import {
   ContentSort,
   ButtonContainer,
   UserContentSort,
+  StyledButton,
 } from '../styles/UserBookhandle';
 
 import {
@@ -52,12 +53,6 @@ const UserBookhandle = () => {
   const content = location.state.content;
   const userName = location.state.userName;
 
-  // console.log(reservName);
-  // console.log(startTime);
-  // console.log(endTime);
-  // console.log(reservNo);
-  // console.log(resourceNo);
-
   const [book, setBook] = useState([]);
 
   // 시작, 종료 날짜
@@ -68,8 +63,6 @@ const UserBookhandle = () => {
   const [startHour, setStartHour] = useState(parseInt(startTime.substr(11, 2)));
   const [endHour, setEndHour] = useState(parseInt(endTime.substr(11, 2)));
 
-  // console.log(endHour);
-
   // 시작, 종료 분
   const [startMinute, setStartMinute] = useState(startTime.substr(14, 2));
   const [endMinute, setEndMinute] = useState(endTime.substr(14, 2));
@@ -78,20 +71,12 @@ const UserBookhandle = () => {
   const [description, setDescription] = useState(content);
   const [cateNo, setCateNo] = useState();
 
-  ////////
   const [openModal, setOpenModal] = useState(false);
   const [count, setCount] = useState(0);
   const [people, setPeople] = useState();
   const [peopleNo, setPeopleNo] = useState([]);
   const [peopleInit, setPeopleInit] = useState([]);
   const [name, setName] = useState('');
-
-  console.log('peopleInit          ', peopleInit);
-  console.log('peopleNo            ', peopleNo);
-
-  useEffect(() => {
-    console.log(people);
-  }, []);
 
   const changeReserveName = (e) => {
     setReserveName(e.target.value);
@@ -125,22 +110,6 @@ const UserBookhandle = () => {
     setDescription(e.target.value);
   };
 
-  // console.log(reservName);
-  // console.log(startDay);
-  // console.log(sIsAM);
-  // console.log(startHour);
-  // console.log(startMinute);
-
-  // console.log(reserveName);
-
-  // console.log(startDay + ' ' + startHour + ':' + startMinute + ':00');
-
-  // console.log(startDay);
-
-  // console.log(content);
-
-  // console.log(startDay + ' ' + startHour + ':' + startMinute + ':00');
-
   const fetchData = async () => {
     try {
       const res = await axios.get(
@@ -151,7 +120,6 @@ const UserBookhandle = () => {
           },
         },
       );
-      console.log(res);
       setCount(res.data.data.peopleList.length);
       setPeopleInit(res.data.data.peopleList);
       setBook(res.data.data.reservationView[0]);
@@ -163,8 +131,12 @@ const UserBookhandle = () => {
 
   const postData = async () => {
     try {
-      // console.log(startDay + ' ' + startHour + ':' + startMinute + ':00');
-      // console.log(endDay + ' ' + endHour + ':' + endMinute + ':00');
+      var temp = [];
+      if (!people) {
+        temp = peopleInit.map((item) => item.userNo);
+        setPeopleNo(temp);
+      }
+
       const res = await axios.post(
         `${process.env.REACT_APP_SERVER_PORT}/admin/reservation/modify`,
         {
@@ -176,7 +148,7 @@ const UserBookhandle = () => {
           startTime: startDay + ' ' + startHour + ':' + startMinute + ':00',
           endTime: endDay + ' ' + endHour + ':' + endMinute + ':00',
           content: description,
-          empNoList: peopleNo,
+          empNoList: arrayIsEmpty(peopleNo) ? temp : peopleNo,
         },
         {
           headers: {
@@ -184,7 +156,6 @@ const UserBookhandle = () => {
           },
         },
       );
-      console.log(res);
       if (res.data.resCode === 1001) {
         alert('이미 예약된 자원입니다. 다시 선택하여 주세요.');
       } else if (res.data.resCode === 1000) {
@@ -436,9 +407,7 @@ const UserBookhandle = () => {
               />
             </ContentSort>
             <ButtonContainer>
-              <Button variant="primary" type="submit">
-                수정
-              </Button>
+              <StyledButton type="submit">수정</StyledButton>
             </ButtonContainer>
           </form>
         </ContentContainer>
